@@ -1,8 +1,8 @@
-"""OpenRouter API client for making LLM requests."""
+"""Groq API client for making LLM requests."""
 
 import httpx
 from typing import List, Dict, Any, Optional
-from .config import OPENROUTER_API_KEY, OPENROUTER_API_URL
+from .config import GROQ_API_KEY, GROQ_API_URL
 
 
 async def query_model(
@@ -11,10 +11,10 @@ async def query_model(
     timeout: float = 120.0
 ) -> Optional[Dict[str, Any]]:
     """
-    Query a single model via OpenRouter API.
+    Query a single model via Groq API.
 
     Args:
-        model: OpenRouter model identifier (e.g., "openai/gpt-4o")
+        model: Groq model identifier (e.g., "llama-3.1-70b-versatile")
         messages: List of message dicts with 'role' and 'content'
         timeout: Request timeout in seconds
 
@@ -22,7 +22,7 @@ async def query_model(
         Response dict with 'content' and optional 'reasoning_details', or None if failed
     """
     headers = {
-        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Authorization": f"Bearer {GROQ_API_KEY}",
         "Content-Type": "application/json",
     }
 
@@ -34,7 +34,7 @@ async def query_model(
     try:
         async with httpx.AsyncClient(timeout=timeout) as client:
             response = await client.post(
-                OPENROUTER_API_URL,
+                GROQ_API_URL,
                 headers=headers,
                 json=payload
             )
@@ -61,7 +61,7 @@ async def query_models_parallel(
     Query multiple models in parallel.
 
     Args:
-        models: List of OpenRouter model identifiers
+        models: List of Groq model identifiers
         messages: List of message dicts to send to each model
 
     Returns:
