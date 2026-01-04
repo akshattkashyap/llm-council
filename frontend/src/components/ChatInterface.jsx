@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import Stage1 from './Stage1';
 import Stage2 from './Stage2';
 import Stage3 from './Stage3';
-import './ChatInterface.css';
+
 
 export default function ChatInterface({
   conversation,
@@ -39,43 +40,43 @@ export default function ChatInterface({
 
   if (!conversation) {
     return (
-      <div className="chat-interface">
-        <div className="empty-state">
-          <h2>Welcome to LLM Council</h2>
-          <p>Create a new conversation to get started</p>
+      <div className="flex-1 flex flex-col h-screen bg-white">
+        <div className="flex flex-col items-center justify-center h-full text-[#666] text-center">
+          <h2 className="mb-2 text-2xl text-text">Welcome to LLM Council</h2>
+          <p className="m-0 text-base">Create a new conversation to get started</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="chat-interface">
-      <div className="messages-container">
+    <div className="flex-1 flex flex-col h-screen bg-white">
+      <div className="flex-1 overflow-y-auto p-6">
         {conversation.messages.length === 0 ? (
-          <div className="empty-state">
-            <h2>Start a conversation</h2>
-            <p>Ask a question to consult the LLM Council</p>
+          <div className="flex flex-col items-center justify-center h-full text-[#666] text-center">
+            <h2 className="mb-2 text-2xl text-text">Start a conversation</h2>
+            <p className="m-0 text-base">Ask a question to consult the LLM Council</p>
           </div>
         ) : (
           conversation.messages.map((msg, index) => (
-            <div key={index} className="message-group">
+            <div key={index} className="mb-8">
               {msg.role === 'user' ? (
-                <div className="user-message">
-                  <div className="message-label">You</div>
-                  <div className="message-content">
-                    <div className="markdown-content">
-                      <ReactMarkdown>{msg.content}</ReactMarkdown>
+                <div className="mb-4">
+                  <div className="text-xs font-semibold text-[#666] mb-2 uppercase tracking-[0.5px]">You</div>
+                  <div className="bg-[#f0f7ff] p-4 rounded-lg border border-[#d0e7ff] text-text leading-relaxed max-w-[80%] whitespace-pre-wrap">
+                    <div className="prose prose-sm max-w-none">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
                     </div>
                   </div>
                 </div>
               ) : (
-                <div className="assistant-message">
-                  <div className="message-label">LLM Council</div>
+                <div className="mb-4">
+                  <div className="text-xs font-semibold text-[#666] mb-2 uppercase tracking-[0.5px]">LLM Council</div>
 
                   {/* Stage 1 */}
                   {msg.loading?.stage1 && (
-                    <div className="stage-loading">
-                      <div className="spinner"></div>
+                    <div className="flex items-center gap-3 p-4 my-3 bg-[#f9fafb] rounded-lg border border-[#e0e0e0] text-[#666] text-sm italic">
+                      <div className="w-5 h-5 border-2 border-[#e0e0e0] border-t-[#4a90e2] rounded-full animate-spin"></div>
                       <span>Running Stage 1: Collecting individual responses...</span>
                     </div>
                   )}
@@ -83,8 +84,8 @@ export default function ChatInterface({
 
                   {/* Stage 2 */}
                   {msg.loading?.stage2 && (
-                    <div className="stage-loading">
-                      <div className="spinner"></div>
+                    <div className="flex items-center gap-3 p-4 my-3 bg-[#f9fafb] rounded-lg border border-[#e0e0e0] text-[#666] text-sm italic">
+                      <div className="w-5 h-5 border-2 border-[#e0e0e0] border-t-[#4a90e2] rounded-full animate-spin"></div>
                       <span>Running Stage 2: Peer rankings...</span>
                     </div>
                   )}
@@ -98,8 +99,8 @@ export default function ChatInterface({
 
                   {/* Stage 3 */}
                   {msg.loading?.stage3 && (
-                    <div className="stage-loading">
-                      <div className="spinner"></div>
+                    <div className="flex items-center gap-3 p-4 my-3 bg-[#f9fafb] rounded-lg border border-[#e0e0e0] text-[#666] text-sm italic">
+                      <div className="w-5 h-5 border-2 border-[#e0e0e0] border-t-[#4a90e2] rounded-full animate-spin"></div>
                       <span>Running Stage 3: Final synthesis...</span>
                     </div>
                   )}
@@ -111,8 +112,8 @@ export default function ChatInterface({
         )}
 
         {isLoading && (
-          <div className="loading-indicator">
-            <div className="spinner"></div>
+          <div className="flex items-center gap-3 p-4 text-[#666] text-sm">
+            <div className="w-5 h-5 border-2 border-[#e0e0e0] border-t-[#4a90e2] rounded-full animate-spin"></div>
             <span>Consulting the council...</span>
           </div>
         )}
@@ -121,9 +122,9 @@ export default function ChatInterface({
       </div>
 
       {conversation.messages.length === 0 && (
-        <form className="input-form" onSubmit={handleSubmit}>
+        <form className="flex items-end gap-3 p-6 border-t border-[#e0e0e0] bg-[#fafafa]" onSubmit={handleSubmit}>
           <textarea
-            className="message-input"
+            className="flex-1 p-3.5 bg-white border border-[#d0d0d0] rounded-lg text-text text-[15px] leading-normal outline-none resize-y min-h-[80px] max-h-[300px] focus:border-[#4a90e2] focus:ring-4 focus:ring-[#4a90e2]/10 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-background"
             placeholder="Ask your question... (Shift+Enter for new line, Enter to send)"
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -133,7 +134,7 @@ export default function ChatInterface({
           />
           <button
             type="submit"
-            className="send-button"
+            className="px-7 py-3.5 bg-[#4a90e2] border border-[#4a90e2] rounded-lg text-white text-[15px] font-semibold cursor-pointer transition-colors whitespace-nowrap self-end hover:bg-[#357abd] hover:border-[#357abd] disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-[#ccc] disabled:border-[#ccc]"
             disabled={!input.trim() || isLoading}
           >
             Send
