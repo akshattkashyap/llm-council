@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import ChatInterface from './components/ChatInterface';
 import { api } from './api';
-import './App.css';
+
 
 function App() {
   const [conversations, setConversations] = useState([]);
@@ -182,7 +182,7 @@ function App() {
   };
 
   return (
-    <div className="app">
+    <div className="flex h-screen w-screen overflow-hidden bg-white text-text">
       <Sidebar
         conversations={conversations}
         currentConversationId={currentConversationId}
